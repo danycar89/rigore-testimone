@@ -24,10 +24,10 @@ body {
 
 #porta {
   position: absolute;
-  top: 10%; /* Leggermente più su */
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 100px;
+  font-size: 110px; /* Un po' più grande */
   z-index: 1;
 }
 
@@ -39,17 +39,18 @@ body {
   font-size: 60px;
   cursor: pointer;
   transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  z-index: 2;
+  z-index: 3;
 }
 
 #giocatore {
   position: absolute;
   bottom: 5%;
   left: 50%;
-  transform: translateX(-50%);
-  font-size: 80px;
-  /* Filtro per simulare i colori giallo-rossi sull'emoji */
-  filter: sepia(1) saturate(5) hue-rotate(-50deg);
+  /* Ruotiamo l'emoji per dare l'idea che sia di spalle e applichiamo i colori */
+  transform: translateX(-50%) scaleX(-1); 
+  font-size: 85px;
+  filter: sepia(1) saturate(6) hue-rotate(-55deg);
+  z-index: 2;
 }
 
 #istruzioni {
@@ -87,8 +88,12 @@ button {
 
 <body>
 
+<audio id="boato">
+  <source src="https://www.myinstants.com/media/sounds/soccer-crowd-cheer.mp3" type="audio/mpeg">
+</audio>
+
 <div id="campo">
-  <div id="porta">Net 🥅</div>
+  <div id="porta">🥅</div>
   <div id="giocatore">🏃‍♂️</div>
   <div id="pallone" onclick="tira()">⚽</div>
   <div id="istruzioni">Tocca il pallone per segnare!</div>
@@ -98,15 +103,14 @@ button {
   <h1 style="font-size: 50px;">GOAL! ⚽</h1>
   <h2>Vuoi essere il nostro testimone?</h2>
   <button class="si" onclick="vaiFinale()">SÌ</button>
-  <button class="no" onclick="vaiFinale()">SÌ (scelta obbligata! 😉)</button>
+  <button class="no" onclick="vaiFinale()">SÌ! ❤️</button>
 </div>
 
 <div id="finale" class="hidden">
   <h1>❤️ GRAZIE ❤️</h1>
-  <p style="font-size: 20px; line-height: 1.6;">
-    Questo momento è importante per noi.<br>
-    Siamo felici di averti al nostro fianco<br>
-    come <b>testimone</b>.
+  <p style="font-size: 22px;">
+    Siamo immensamente felici!<br>
+    Sarà un onore averti come <b>testimone</b>.
   </p>
 </div>
 
@@ -117,35 +121,39 @@ function tira() {
   if (tirato) return;
   tirato = true;
 
-  // Prima vibrazione: il tocco iniziale
-  if (navigator.vibrate) navigator.vibrate(100);
-
   const palla = document.getElementById("pallone");
+  const audio = document.getElementById("boato");
 
-  // Animazione verso il centro della porta
-  palla.style.bottom = "78%"; 
-  palla.style.fontSize = "30px";
+  // Vibrazione al tiro
+  if (navigator.vibrate) navigator.vibrate(80);
+
+  // Animazione tiro
+  palla.style.bottom = "80%"; 
+  palla.style.fontSize = "25px";
   palla.style.left = "50%";
 
-  // Seconda vibrazione: quando la palla "insacca" (dopo 1 secondo)
+  // Eventi al momento del Goal
   setTimeout(() => {
-    if (navigator.vibrate) navigator.vibrate([200, 100, 200]); // Vibrazione "Goal"
+    // Vibrazione forte
+    if (navigator.vibrate) navigator.vibrate([300, 100, 300]); 
     
-    // Piccolo effetto scossa alla porta
-    document.getElementById("porta").style.transform = "translateX(-50%) scale(1.1)";
-  }, 1000);
+    // Riproduce il boato
+    audio.play().catch(e => console.log("Audio bloccato dal browser: serve un'interazione dell'utente."));
 
-  // Passaggio alla domanda finale
+    // Effetto visivo porta
+    document.getElementById("porta").style.transform = "translateX(-50%) scale(1.15)";
+  }, 900);
+
+  // Cambio schermata
   setTimeout(() => {
     document.getElementById("campo").classList.add("hidden");
     document.getElementById("domanda").classList.remove("hidden");
-  }, 2000);
+  }, 2500);
 }
 
 function vaiFinale() {
   document.getElementById("domanda").classList.add("hidden");
   document.getElementById("finale").classList.remove("hidden");
-  // Vibrazione celebrativa finale
   if (navigator.vibrate) navigator.vibrate(500);
 }
 </script>
