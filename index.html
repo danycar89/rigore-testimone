@@ -49,4 +49,86 @@ body {
 
 #istruzioni {
   position: absolute;
-  b
+  bottom: 1%;
+  width: 100%;
+  font-size: 18px;
+}
+
+.hidden {
+  display: none;
+}
+
+button {
+  padding: 15px 30px;
+  font-size: 22px;
+  margin: 10px;
+  border-radius: 10px;
+  border: none;
+}
+
+.si {
+  background: #ffd700;
+  color: #8b0000;
+}
+
+.no {
+  background: #8b0000;
+  color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div id="campo">
+  <div id="porta">🥅</div>
+  <div id="pallone" onclick="tira()">⚽</div>
+  <div id="giocatore">🧍‍♂️</div>
+  <div id="istruzioni">Tocca il pallone per tirare il rigore</div>
+</div>
+
+<div id="domanda" class="hidden">
+  <h1>GOAL ⚽</h1>
+  <h2>Vuoi essere il nostro testimone?</h2>
+  <button class="si" onclick="vaiFinale()">SÌ</button>
+  <button class="no" onclick="vaiFinale()">NO</button>
+</div>
+
+<div id="finale" class="hidden">
+  <h1>❤️ GRAZIE ❤️</h1>
+  <p>
+    Questo momento è importante per noi.<br>
+    Siamo felici di averti al nostro fianco<br>
+    come <b>testimone</b>.
+  </p>
+</div>
+
+<script>
+let tirato = false;
+
+function tira() {
+  if (tirato) return;
+  tirato = true;
+
+  if (navigator.vibrate) navigator.vibrate(200);
+
+  const palla = document.getElementById("pallone");
+  palla.style.bottom = "62%";
+  palla.style.fontSize = "32px";
+
+  setTimeout(() => {
+    document.getElementById("campo").classList.add("hidden");
+    document.getElementById("domanda").classList.remove("hidden");
+  }, 1300);
+}
+
+function vaiFinale() {
+  document.getElementById("domanda").classList.add("hidden");
+  document.getElementById("finale").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
+
+Fix animazione rigore
