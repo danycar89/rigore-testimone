@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Il Rigore Decisivo</title>
+<title>Il Rigore della Vita</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
 body {
   margin: 0;
   background: #222;
-  font-family: 'Arial Black', sans-serif;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: white;
   text-align: center;
   overflow: hidden;
@@ -19,17 +21,9 @@ body {
   position: relative;
   width: 100%;
   height: 100vh;
-  /* Immagine di un campo da calcio realistico */
+  /* Immagine campo realistico */
   background: url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=2070&auto=format&fit=crop') center bottom;
   background-size: cover;
-}
-
-#overlay-erba {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 40%;
-  background: linear-gradient(to top, rgba(11, 125, 62, 0.8), transparent);
 }
 
 #porta {
@@ -37,13 +31,13 @@ body {
   top: 15%;
   left: 50%;
   transform: translateX(-50%);
-  width: 320px;
-  height: 180px;
-  /* Grafica di una porta da calcio */
+  width: 300px;
+  height: 160px;
+  /* Grafica porta realistica */
   background: url('https://cdn-icons-png.flaticon.com/512/824/824559.png') no-repeat center;
   background-size: contain;
   z-index: 1;
-  transition: transform 0.2s;
+  transition: transform 0.1s;
 }
 
 #giocatore {
@@ -51,13 +45,13 @@ body {
   bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
-  width: 180px;
-  height: 250px;
-  /* Silhouette di un calciatore di spalle */
+  width: 160px;
+  height: 240px;
+  /* Calciatore di spalle */
   background: url('https://www.transparentpng.com/download/football-player/nEY3Mh-football-player-clipart-hd.png') no-repeat center;
   background-size: contain;
-  /* Filtro Giallo-Rosso intenso */
-  filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.5)) sepia(1) saturate(10) hue-rotate(-50deg);
+  /* Filtro Giallo-Rosso */
+  filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.6)) sepia(1) saturate(8) hue-rotate(-50deg);
   z-index: 2;
   pointer-events: none;
 }
@@ -67,52 +61,60 @@ body {
   bottom: 18%;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   background: url('https://cdn-icons-png.flaticon.com/512/824/824513.png') no-repeat center;
   background-size: contain;
   cursor: pointer;
-  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 3;
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.2);
 }
 
 #istruzioni {
   position: absolute;
   top: 5%;
   width: 100%;
-  font-size: 20px;
-  text-shadow: 2px 2px 4px black;
+  font-size: 22px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
 }
 
 .hidden { display: none; }
 
 #domanda, #finale {
-  background: rgba(0,0,0,0.9);
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 10;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
+h1 { font-size: 3.5rem; margin: 0; color: #ffd700; }
+h2 { font-size: 1.8rem; margin: 20px 0; }
+
 button {
-  padding: 15px 40px;
-  font-size: 24px;
-  margin: 15px;
+  padding: 18px 45px;
+  font-size: 20px;
+  margin: 10px;
   border-radius: 50px;
   border: none;
   cursor: pointer;
-  text-transform: uppercase;
   font-weight: bold;
+  transition: transform 0.2s;
 }
 
-.si { background: #ffd700; color: #8b0000; box-shadow: 0 0 20px #ffd700; }
+button:active { transform: scale(0.95); }
+
+.si { background: #ffd700; color: #8b0000; box-shadow: 0 0 15px #ffd700; }
 .no { background: #8b0000; color: white; }
 </style>
 </head>
-
 <body>
 
 <audio id="boato">
@@ -120,25 +122,24 @@ button {
 </audio>
 
 <div id="campo">
-  <div id="overlay-erba"></div>
+  <div id="istruzioni">Tocca la palla e segna!</div>
   <div id="porta"></div>
   <div id="giocatore"></div>
   <div id="pallone" onclick="tira()"></div>
-  <div id="istruzioni">SEGNA IL RIGORE DELLA TUA VITA! ⚽</div>
 </div>
 
 <div id="domanda" class="hidden">
-  <h1 style="font-size: 60px; color: #ffd700; margin-bottom: 10px;">GOAL!!!</h1>
-  <h2 style="padding: 0 20px;">Vuoi essere il nostro testimone?</h2>
-  <button class="si" onclick="vaiFinale()">SÌ, LO VOGLIO!</button>
-  <button class="no" onclick="vaiFinale()">ASSOLUTAMENTE SÌ!</button>
+  <h1>GOAL! ⚽</h1>
+  <h2>Vuoi essere il nostro testimone?</h2>
+  <button class="si" onclick="vaiFinale()">SÌ, CERTAMENTE!</button>
+  <button class="no" onclick="vaiFinale()">SÌ, CON TUTTO IL CUORE!</button>
 </div>
 
 <div id="finale" class="hidden">
-  <h1 style="color: #ffd700; font-size: 50px;">❤️ GRAZIE ❤️</h1>
-  <p style="font-size: 24px; line-height: 1.5; padding: 20px;">
-    Siamo onorati di averti al nostro fianco.<br>
-    Sarà un giorno indimenticabile!
+  <h1>❤️ GRAZIE ❤️</h1>
+  <p style="font-size: 24px; line-height: 1.6;">
+    Siamo felici di averti al nostro fianco.<br>
+    Sarà un giorno speciale!
   </p>
 </div>
 
@@ -153,21 +154,25 @@ function tira() {
   const audio = document.getElementById("boato");
   const porta = document.getElementById("porta");
 
-  if (navigator.vibrate) navigator.vibrate(50);
+  // Vibrazione al tocco (Android)
+  if (navigator.vibrate) navigator.vibrate(60);
 
-  // Animazione realistica: la palla va in porta e si rimpicciolisce per la prospettiva
-  palla.style.bottom = "72%"; 
-  palla.style.width = "25px";
-  palla.style.height = "25px";
-  palla.style.left = "52%"; // Un po' angolata per realismo
+  // Animazione: la palla entra in porta e rimpicciolisce
+  palla.style.bottom = "75%"; 
+  palla.style.width = "20px";
+  palla.style.height = "20px";
+  palla.style.left = "51%"; // Un po' verso l'angolo
 
   setTimeout(() => {
-    if (navigator.vibrate) navigator.vibrate([200, 100, 200]); 
-    audio.play();
+    // Vibrazione GOAL
+    if (navigator.vibrate) navigator.vibrate([200, 50, 200]);
     
-    // La porta trema per l'impatto
-    porta.style.transform = "translateX(-50%) scale(1.05) translateY(-5px)";
-  }, 800);
+    // Suono Boato
+    audio.play().catch(e => console.log("Audio in attesa di interazione"));
+
+    // Effetto tremolio porta
+    porta.style.transform = "translateX(-50%) translateY(-5px) scale(1.05)";
+  }, 750);
 
   setTimeout(() => {
     document.getElementById("domanda").classList.remove("hidden");
@@ -175,9 +180,18 @@ function tira() {
 }
 
 function vaiFinale() {
+  // Esplosione di coriandoli
+  confetti({
+    particleCount: 150,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ['#ffd700', '#ff0000', '#ffffff']
+  });
+
+  if (navigator.vibrate) navigator.vibrate(400);
+
   document.getElementById("domanda").classList.add("hidden");
   document.getElementById("finale").classList.remove("hidden");
-  if (navigator.vibrate) navigator.vibrate(500);
 }
 </script>
 
