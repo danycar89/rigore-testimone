@@ -12,6 +12,7 @@ body {
   font-family: Arial, sans-serif;
   color: white;
   text-align: center;
+  overflow: hidden;
 }
 
 #campo {
@@ -23,10 +24,11 @@ body {
 
 #porta {
   position: absolute;
-  top: 12%;
+  top: 10%; /* Leggermente più su */
   left: 50%;
   transform: translateX(-50%);
-  font-size: 90px;
+  font-size: 100px;
+  z-index: 1;
 }
 
 #pallone {
@@ -36,7 +38,8 @@ body {
   transform: translateX(-50%);
   font-size: 60px;
   cursor: pointer;
-  transition: all 1.2s ease-in-out;
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 2;
 }
 
 #giocatore {
@@ -44,7 +47,9 @@ body {
   bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 70px;
+  font-size: 80px;
+  /* Filtro per simulare i colori giallo-rossi sull'emoji */
+  filter: sepia(1) saturate(5) hue-rotate(-50deg);
 }
 
 #istruzioni {
@@ -64,11 +69,13 @@ button {
   margin: 10px;
   border-radius: 10px;
   border: none;
+  cursor: pointer;
 }
 
 .si {
   background: #ffd700;
   color: #8b0000;
+  font-weight: bold;
 }
 
 .no {
@@ -81,22 +88,22 @@ button {
 <body>
 
 <div id="campo">
-  <div id="porta">🥅</div>
+  <div id="porta">Net 🥅</div>
+  <div id="giocatore">🏃‍♂️</div>
   <div id="pallone" onclick="tira()">⚽</div>
-  <div id="giocatore">🧍‍♂️</div>
-  <div id="istruzioni">Tocca il pallone per tirare il rigore</div>
+  <div id="istruzioni">Tocca il pallone per segnare!</div>
 </div>
 
 <div id="domanda" class="hidden">
-  <h1>GOAL ⚽</h1>
+  <h1 style="font-size: 50px;">GOAL! ⚽</h1>
   <h2>Vuoi essere il nostro testimone?</h2>
   <button class="si" onclick="vaiFinale()">SÌ</button>
-  <button class="no" onclick="vaiFinale()">NO</button>
+  <button class="no" onclick="vaiFinale()">SÌ (scelta obbligata! 😉)</button>
 </div>
 
 <div id="finale" class="hidden">
   <h1>❤️ GRAZIE ❤️</h1>
-  <p>
+  <p style="font-size: 20px; line-height: 1.6;">
     Questo momento è importante per noi.<br>
     Siamo felici di averti al nostro fianco<br>
     come <b>testimone</b>.
@@ -110,21 +117,36 @@ function tira() {
   if (tirato) return;
   tirato = true;
 
-  if (navigator.vibrate) navigator.vibrate(200);
+  // Prima vibrazione: il tocco iniziale
+  if (navigator.vibrate) navigator.vibrate(100);
 
   const palla = document.getElementById("pallone");
-  palla.style.bottom = "62%";
-  palla.style.fontSize = "32px";
 
+  // Animazione verso il centro della porta
+  palla.style.bottom = "78%"; 
+  palla.style.fontSize = "30px";
+  palla.style.left = "50%";
+
+  // Seconda vibrazione: quando la palla "insacca" (dopo 1 secondo)
+  setTimeout(() => {
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]); // Vibrazione "Goal"
+    
+    // Piccolo effetto scossa alla porta
+    document.getElementById("porta").style.transform = "translateX(-50%) scale(1.1)";
+  }, 1000);
+
+  // Passaggio alla domanda finale
   setTimeout(() => {
     document.getElementById("campo").classList.add("hidden");
     document.getElementById("domanda").classList.remove("hidden");
-  }, 1300);
+  }, 2000);
 }
 
 function vaiFinale() {
   document.getElementById("domanda").classList.add("hidden");
   document.getElementById("finale").classList.remove("hidden");
+  // Vibrazione celebrativa finale
+  if (navigator.vibrate) navigator.vibrate(500);
 }
 </script>
 
